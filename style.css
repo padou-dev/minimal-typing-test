@@ -1,0 +1,51 @@
+body {
+    background-color: #111; /* Dark background */
+    color: #eee;            /* Light text */
+    font-family: 'Courier New', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.test-container {
+    width: 60%;
+    text-align: left;
+}
+
+#quote-display {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #444; /* Dimmed text until typed */
+}
+
+#quote-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #00d4ff; /* Highlighted typing color */
+    width: 100%;
+    font-size: 1.5rem;
+    resize: none;
+}
+
+/* Styling for individual letters */
+#quote-display span {
+    position: relative;
+}
+
+.correct {
+    color: #eee; /* Light gray for correct */
+}
+
+.incorrect {
+    color: #ff4757; /* Soft red for errors */
+    text-decoration: underline;
+}
+
+/* Make the textarea invisible but still functional */
+#quote-input {
+    position: absolute;
+    opacity: 0; /* Keeps it clickable/focusable but hidden */
+}
