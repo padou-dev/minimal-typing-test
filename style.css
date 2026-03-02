@@ -10,13 +10,16 @@ body {
 }
 
 .test-container {
-    width: 60%;
-    text-align: left;
+    width: 80%;
+    max-width: 900px;
+    text-align: center;
 }
 
 #quote-display {
     font-size: 1.5rem;
-    margin-bottom: 1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    word-spacing: 5px;
     color: #444; /* Dimmed text until typed */
 }
 
@@ -48,4 +51,26 @@ body {
 #quote-input {
     position: absolute;
     opacity: 0; /* Keeps it clickable/focusable but hidden */
+}
+
+/* Style the buttons */
+.word-count-options {
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center; /* Centers the buttons */
+    gap: 20px;
+}
+
+.word-count-options button {
+    background: none;
+    border: none;
+    color: #444; /* Dimmed color */
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.word-count-options button:hover {
+    color: #eee; /* Light up on hover */
 }
