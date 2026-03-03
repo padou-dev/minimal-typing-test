@@ -1,81 +1,100 @@
 body {
-    background-color: #111; /* Dark background */
-    color: #eee;            /* Light text */
+    background-color: #111;
+    color: #eee;
     font-family: 'Courier New', monospace;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh; /* Changed from height to min-height for better stability */
     margin: 0;
 }
 
 .test-container {
-    width: 90%;             /* Use a percentage so it shrinks on small screens */
-    max-width: 900px;       /* But don't let it get TOO wide on big monitors */
-    text-align: center;
-    margin: 0 auto;         /* Keeps it centered on the page */
+    width: 90%;
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative; /* Adds a reference point for the hidden input */
 }
 
-#quote-display {
-    line-height: 1.6;
-    margin-bottom: 2rem;
-    font-size: 1.5rem;
-    word-spacing: 5px;
-    display: flex;          /* Allows letters to flow */
-    flex-wrap: wrap;        /* Forces letters to wrap to the next line */
-    justify-content: center; /* Keeps the wrapped lines centered */
-    overflow-x: hidden;     /* Safeguard: hide any horizontal scrollbars */
-    word-break: break-word; /* Prevents long words from breaking the layout */
-}
-
-#quote-input {
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #00d4ff; /* Highlighted typing color */
-    width: 100%;
-    font-size: 1.5rem;
-    resize: none;
-}
-
-/* Styling for individual letters */
-#quote-display span {
-    position: relative;
-}
-
-.correct {
-    color: #eee; /* Light gray for correct */
-}
-
-.incorrect {
-    color: #ff4757; /* Soft red for errors */
-    text-decoration: underline;
-}
-
-/* Make the textarea invisible but still functional */
-#quote-input {
-    position: absolute;
-    opacity: 0; /* Keeps it clickable/focusable but hidden */
-}
-
-/* Style the buttons */
+/* 1. BUTTON STYLING - Ensure they are on top */
 .word-count-options {
     margin-bottom: 2rem;
     display: flex;
-    justify-content: center; /* Centers the buttons */
+    justify-content: center;
     gap: 20px;
+    position: relative; 
+    z-index: 10; /* Forces buttons to stay "above" the invisible input */
 }
 
 .word-count-options button {
     background: none;
     border: none;
-    color: #444; /* Dimmed color */
+    color: #444;
     font-family: inherit;
-    font-size: 1rem;
+    font-size: 1.2rem; /* Made slightly larger for easier clicking */
     cursor: pointer;
     transition: 0.3s;
+    padding: 5px 10px; /* Bigger click area */
 }
 
 .word-count-options button:hover {
-    color: #eee; /* Light up on hover */
+    color: #eee;
 }
+
+/* 2. THE QUOTE DISPLAY */
+#quote-display {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: flex-start;
+    min-height: 150px;
+    width: 100%;
+    line-height: 2;
+    font-size: 1.5rem;
+    padding: 0 10px;
+}
+
+.word {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+#quote-display span {
+    display: inline-block;
+    position: relative;
+    white-space: pre; /* Keeps the spaces working */
+    border-left: 2px solid transparent;
+}
+
+/* 3. COLORS & CARET */
+#quote-display span.active {
+    border-left: 2px solid #00d4ff;
+    margin-left: -2px;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { border-color: #00d4ff; }
+    50% { border-color: transparent; }
+}
+
+#quote-display span.correct {
+    color: #eeeeee;
+}
+
+#quote-display span.incorrect {
+    color: #ff4757 !important;
+    background-color: rgba(255, 71, 87, 0.2);
+    text-decoration: none !important;
+}
+
+/* 4. THE INVISIBLE INPUT FIX */
+#quote-input {
+    position: absolute;
+    top: 0;         /* Moves it to the top */
+    left: 0;        /* Moves it to the side */
+    opacity: 0;     /* Hidden */
+    pointer-events: none; /*
