@@ -97,4 +97,5 @@ body {
     top: 0;         /* Moves it to the top */
     left: 0;        /* Moves it to the side */
     opacity: 0;     /* Hidden */
-    pointer-events: none; /*
+    pointer-events: none;
+}
