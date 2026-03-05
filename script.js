@@ -71,6 +71,39 @@ function changeWordCount(count) {
     // Crucial: Put the cursor back in the hidden input
     quoteInputElement.focus(); 
 }
+function showResults() {
+    const arrayQuote = quoteDisplayElement.querySelectorAll('span');
+    const correctChars = quoteDisplayElement.querySelectorAll('span.correct').length;
+    const totalChars = arrayQuote.length;
+    
+    // Calculate Accuracy
+    const accuracy = Math.round((correctChars / totalChars) * 100);
+    
+    // Get WPM from the existing display
+    const finalWpm = wpmElement.innerText;
+
+    // Update Modal Text
+    document.getElementById('final-wpm').innerText = finalWpm;
+    document.getElementById('final-accuracy').innerText = accuracy + "%";
+    
+    // Show Modal
+    document.getElementById('results-modal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('results-modal').style.display = 'none';
+    renderNewQuote();
+}
+
+// UPDATE your Input Event Listener to trigger this:
+quoteInputElement.addEventListener('input', () => {
+    // ... your existing code ...
+
+    // At the very bottom of the listener:
+    if (quoteInputElement.value.length === quoteDisplayElement.querySelectorAll('span').length) {
+        showResults();
+    }
+});
 
 /**
  * CORE LOGIC: The Input Listener

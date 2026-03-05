@@ -5,6 +5,22 @@
     <link rel="stylesheet" href="style.css">
     <title>Type.io | Minimal</title>
 </head>
+<div id="results-modal" class="modal">
+    <div class="modal-content">
+        <h2>Test Complete</h2>
+        <div class="stats-grid">
+            <div>
+                <p class="label">WPM</p>
+                <p id="final-wpm" class="value">0</p>
+            </div>
+            <div>
+                <p class="label">Accuracy</p>
+                <p id="final-accuracy" class="value">0%</p>
+            </div>
+        </div>
+        <button onclick="closeModal()">Try Again</button>
+    </div>
+</div>
 <body>
     <div class="test-container">
         <div class="word-count-options">
