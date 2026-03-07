@@ -1,37 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimal Typing Test</title>
     <link rel="stylesheet" href="style.css">
-    <title>Type Test | Minimal</title>
 </head>
-<div id="results-modal" class="modal">
-    <div class="modal-content">
-        <h2>Test Complete</h2>
-        <div class="stats-grid">
-            <div>
-                <p class="label">WPM</p>
-                <p id="final-wpm" class="value">0</p>
-            </div>
-            <div>
-                <p class="label">Accuracy</p>
-                <p id="final-accuracy" class="value">0%</p>
-            </div>
-        </div>
-        <button onclick="closeModal()">Try Again</button>
-    </div>
-</div>
 <body>
+
     <div class="test-container">
+        <div class="theme-switcher">
+            <button onclick="setTheme('dark')">Carbon</button>
+            <button onclick="setTheme('cyberpunk')">Cyberpunk</button>
+            <button onclick="setTheme('light')">Paper</button>
+        </div>
+
         <div class="word-count-options">
             <button onclick="changeWordCount(25)">25</button>
             <button onclick="changeWordCount(50)">50</button>
             <button onclick="changeWordCount(100)">100</button>
         </div>
+
+        <div id="wpm-display">WPM: <span id="wpm">0</span></div>
+
         <div id="quote-display"></div>
+        
         <textarea id="quote-input" autofocus spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
-        <div class="stats">WPM: <span id="wpm">0</span></div>
     </div>
+
+    <div id="results-modal" class="modal">
+        <div class="modal-content">
+            <h2>Test Complete</h2>
+            <div class="stats-grid">
+                <div>
+                    <p class="label">WPM</p>
+                    <p id="final-wpm" class="value">0</p>
+                </div>
+                <div>
+                    <p class="label">Accuracy</p>
+                    <p id="final-accuracy" class="value">0%</p>
+                </div>
+            </div>
+            <button onclick="closeModal()">Try Again</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

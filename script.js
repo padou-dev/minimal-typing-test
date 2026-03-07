@@ -2,166 +2,141 @@ const quoteDisplayElement = document.getElementById('quote-display');
 const quoteInputElement = document.getElementById('quote-input');
 const wpmElement = document.getElementById('wpm');
 
-let words = [];             // Stores the 10,000 words from JSON
-let currentWordCount = 25;  // Default test length
-let startTime;              // Tracks when the user starts typing
+let words = [];
+let currentWordCount = 25;
+let startTime;
 
+// 1. LOAD WORDS FROM JSON
 async function loadWords() {
     try {
         const response = await fetch('words.json');
         const data = await response.json();
-        words = data.commonWords.filter(word => word.length > 2);
-        
-        // Initial start
-        renderNewQuote(); 
+        // Filters out very short words if desired
+        words = data.commonWords;
+        renderNewQuote();
     } catch (error) {
-        console.error("Dictionary failed to load:", error);
+        console.error("Failed to load words:", error);
     }
 }
 
-/**
- * RENDER FUNCTION: Drawing the test on screen
- */
+// 2. RENDER THE WORDS (With Word Containers)
 function renderNewQuote() {
-    let randomWords = [];
-    for (let i = 0; i < currentWordCount; i++) {
-        const randomIndex = Math.floor(Math.random() * words.length);
-        randomWords.push(words[randomIndex]);
-    }
-
     quoteDisplayElement.innerHTML = '';
+    quoteInputElement.value = '';
+    wpmElement.innerText = 0;
+    startTime = null;
 
-    randomWords.forEach(word => {
+    // Get random selection
+    const randomWords = [...words].sort(() => 0.5 - Math.random()).slice(0, currentWordCount);
+
+    randomWords.forEach((word, index) => {
         const wordEl = document.createElement('div');
         wordEl.classList.add('word');
 
-        // Add letters
-        word.split('').forEach(character => {
-            const characterSpan = document.createElement('span');
-            characterSpan.innerText = character;
-            wordEl.appendChild(characterSpan);
+        // Letters
+        word.split('').forEach(char => {
+            const charSpan = document.createElement('span');
+            charSpan.innerText = char;
+            wordEl.appendChild(charSpan);
         });
 
-        // Add THE SPACE at the end of the word
-        const spaceSpan = document.createElement('span');
-        spaceSpan.innerText = ' '; // Explicit space character
-        wordEl.appendChild(spaceSpan);
+        // Space (Only if it's not the very last word of the test)
+        if (index < randomWords.length - 1) {
+            const spaceSpan = document.createElement('span');
+            spaceSpan.innerText = ' ';
+            wordEl.appendChild(spaceSpan);
+        }
 
         quoteDisplayElement.appendChild(wordEl);
     });
 
-    quoteInputElement.value = null;
-    startTime = null;
-    wpmElement.innerText = 0;
-
-    // Set caret on the first letter of the first word
-    const firstSpan = quoteDisplayElement.querySelector('span');
-    if (firstSpan) firstSpan.classList.add('active');
-
-    quoteInputElement.focus();
+    // Mark the first character as active (caret position)
+    const firstChar = quoteDisplayElement.querySelector('span');
+    if (firstChar) firstChar.classList.add('active');
 }
 
-/**
- * Updates the test length and restarts the game
- */
-function changeWordCount(count) {
-    currentWordCount = count; // Update the global variable
-    renderNewQuote();         // Call our updated render function
-    
-    // Crucial: Put the cursor back in the hidden input
-    quoteInputElement.focus(); 
-}
+// 3. INPUT HANDLING & LOGIC
+quoteInputElement.addEventListener('input', () => {
+    const arrayQuote = quoteDisplayElement.querySelectorAll('span');
+    const arrayValue = quoteInputElement.value.split('');
+
+    // Start timer on first keystroke
+    if (!startTime) startTime = new Date();
+
+    arrayQuote.forEach((characterSpan, index) => {
+        const character = arrayValue[index];
+        characterSpan.classList.remove('active');
+
+        if (character == null) {
+            characterSpan.classList.remove('correct');
+            characterSpan.classList.remove('incorrect');
+        } else if (character === characterSpan.innerText) {
+            characterSpan.classList.add('correct');
+            characterSpan.classList.remove('incorrect');
+        } else {
+            characterSpan.classList.remove('correct');
+            characterSpan.classList.add('incorrect');
+        }
+    });
+
+    // Update Caret (Active Class)
+    const nextChar = arrayQuote[arrayValue.length];
+    if (nextChar) {
+        nextChar.classList.add('active');
+    }
+
+    // WPM Calculation
+    const timeInSeconds = (new Date() - startTime) / 1000;
+    const wordCount = arrayValue.length / 5; // Standard WPM calculation (5 chars = 1 word)
+    if (timeInSeconds > 0) {
+        wpmElement.innerText = Math.round(wordCount / (timeInSeconds / 60));
+    }
+
+    // Check for Finish
+    if (arrayValue.length >= arrayQuote.length) {
+        showResults();
+    }
+});
+
+// 4. RESULTS & THEMING FUNCTIONS
 function showResults() {
     const arrayQuote = quoteDisplayElement.querySelectorAll('span');
     const correctChars = quoteDisplayElement.querySelectorAll('span.correct').length;
-    const totalChars = arrayQuote.length;
-    
-    // Calculate Accuracy
-    const accuracy = Math.round((correctChars / totalChars) * 100);
-    
-    // Get WPM from the existing display
-    const finalWpm = wpmElement.innerText;
+    const accuracy = Math.round((correctChars / arrayQuote.length) * 100);
 
-    // Update Modal Text
-    document.getElementById('final-wpm').innerText = finalWpm;
+    document.getElementById('final-wpm').innerText = wpmElement.innerText;
     document.getElementById('final-accuracy').innerText = accuracy + "%";
-    
-    // Show Modal
     document.getElementById('results-modal').style.display = 'flex';
 }
 
 function closeModal() {
     document.getElementById('results-modal').style.display = 'none';
     renderNewQuote();
+    quoteInputElement.focus();
 }
 
-// UPDATE your Input Event Listener to trigger this:
-quoteInputElement.addEventListener('input', () => {
-    // ... your existing code ...
+function changeWordCount(count) {
+    currentWordCount = count;
+    renderNewQuote();
+    quoteInputElement.focus();
+}
 
-    // At the very bottom of the listener:
-    if (quoteInputElement.value.length === quoteDisplayElement.querySelectorAll('span').length) {
-        showResults();
-    }
-});
+function setTheme(themeName) {
+    document.documentElement.setAttribute('data-theme', themeName);
+    localStorage.setItem('theme', themeName);
+}
 
-/**
- * CORE LOGIC: The Input Listener
- */
-quoteInputElement.addEventListener('input', () => {
-    const arrayQuote = quoteDisplayElement.querySelectorAll('span');
-    const arrayValue = quoteInputElement.value.split('');
-    const currentInputLength = arrayValue.length;
-
-    // Start timer on first keypress
-    if (!startTime && currentInputLength > 0) {
-        startTime = new Date();
-    }
-
-    arrayQuote.forEach((characterSpan, index) => {
-        const character = arrayValue[index];
-
-        // --- Logic Part A: Correct/Incorrect Colors ---
-        if (character == null) {
-            // Not typed yet
-            characterSpan.classList.remove('correct', 'incorrect');
-        } else if (character === characterSpan.innerText) {
-            // Correct
-            characterSpan.classList.add('correct');
-            characterSpan.classList.remove('incorrect');
-        } else {
-            // Typo
-            characterSpan.classList.remove('correct');
-            characterSpan.classList.add('incorrect');
-        }
-
-        // --- Logic Part B: The Caret Movement ---
-        // We add 'active' to the span at the CURRENT index (where the next char goes)
-        if (index === currentInputLength) {
-            characterSpan.classList.add('active');
-        } else {
-            characterSpan.classList.remove('active');
-        }
-    });
-
-    // --- Logic Part C: WPM Calculation ---
-    if (startTime) {
-        const timeInMinutes = (new Date() - startTime) / 60000;
-        if (timeInMinutes > 0) {
-            const charactersTyped = quoteInputElement.value.length;
-            const wpm = Math.round((charactersTyped / 5) / timeInMinutes);
-            wpmElement.innerText = wpm;
-        }
-    }
-
-    // Check if finished
-    if (currentInputLength === arrayQuote.length) {
-        // You can add a 'Finished' popup here later!
-        console.log("Test Complete!");
-    }
-});
-
-/**
- * START APPLICATION
- */
+// 5. INITIALIZATION
 loadWords();
+
+// Load saved theme
+const savedTheme = localStorage.getItem('theme') || 'dark';
+setTheme(savedTheme);
+
+// Keep focus on input even if user clicks away
+document.addEventListener('click', () => quoteInputElement.focus());
+
+// Export functions to window scope for HTML onclicks
+window.changeWordCount = changeWordCount;
+window.setTheme = setTheme;
+window.closeModal = closeModal;
