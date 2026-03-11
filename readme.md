@@ -1,6 +1,6 @@
 # ⌨️ TypeLogic | Minimalist Typing Speed Test
 
-A high-performance, responsive typing application built to mimic the "pro" experience of Monkeytype and Typings.gg. Designed with a focus on typography, fluid animations, and zero-latency input tracking.
+A high-performance, responsive typing application, designed with a focus on typography, fluid animations, and zero-latency input tracking.
 
 ![Status](https://img.shields.io/badge/Status-Live-brightgreen?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
