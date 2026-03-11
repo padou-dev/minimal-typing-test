@@ -6,7 +6,7 @@ A high-performance, responsive typing application, designed with a focus on typo
 ![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
 ![Stack](https://img.shields.io/badge/Stack-Vanilla_JS_/_CSS3-yellow?style=flat-square)
 
-## 🚀 [View Live Demo](https://github.com/padou-dev/minimal-typing-test)/)
+## 🚀 [View Live Demo](https://github.com/padou-dev/minimal-typing-test)
 
 ---
 
